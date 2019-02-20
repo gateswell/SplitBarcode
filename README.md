@@ -16,12 +16,12 @@ Usage:
 	perl splitBarcode_PE.pl [options]
 		*-r1 --read1 <string>		read1.fq.gz
 		*-r2 --read2 <string>		read2.fq.gz
-		 -e  --errNum <int>			mismatch number [default: 2]
+		 -e  --errNum <int>		mismatch number [default: 2]
 		*-f  --firstCycle <int>		First cylce of barcode
 		*-l  --lastCycle <int>		Last cycle of barcode
 		*-b  --barcodeList <string>	barcodes list
 		 -o  --outdir <string>		output directory [default: ./]
-		 -h  --help					print help information and exit
+		 -h  --help			print help information and exit
 ```
 - `*` means parameter must be provided.
 - the default mismatch value is 2.
@@ -46,6 +46,7 @@ There are several types of file generated after script finished：
 #### - barcode fastq
 The format of fastq name is:
 > Chipname_lane_barcode_1.fq : ` V300000000_L01_1.fq`
+>
 > Chipname_lane_barcode_2.fq : ` V300000000_L01_2.fq`
 
 Chip name and lane name are captured from the read1.fq.gz.
