@@ -5,6 +5,7 @@ The current implementation was written by caoshuhuan (caoshuhuan@yeah.net).
 send email to me if you have any question about this script, I feel appeciate when you report bug to me ! 
 ## Version history
 The current code is v1.0 
+
 v1.1 *(under deverlopment)* :
  - support dual barcodes split
 ## Prerequisites, Tutorial and Results
@@ -45,7 +46,9 @@ There are several types of file generated after script finished：
 
 #### - barcode fastq
 The format of fastq name is:
+
 > Chipname_lane_barcode_1.fq : ` V300000000_L01_1.fq` 
+
 > Chipname_lane_barcode_2.fq : ` V300000000_L01_2.fq` 
 
 Chip name and lane name are captured from the read1.fq.gz. 
