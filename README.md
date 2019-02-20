@@ -1,4 +1,4 @@
-# README.md
+# SplitBarcode
 The repository provides scripts for spliting PE fastq from MGI sequencer platform by barcodes sequence. 
 ## Author
 The current implementation was written by caoshuhuan (caoshuhuan@yeah.net).
@@ -46,7 +46,6 @@ There are several types of file generated after script finished：
 #### - barcode fastq
 The format of fastq name is:
 > Chipname_lane_barcode_1.fq : ` V300000000_L01_1.fq`
->
 > Chipname_lane_barcode_2.fq : ` V300000000_L01_2.fq`
 
 Chip name and lane name are captured from the read1.fq.gz.
