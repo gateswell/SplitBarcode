@@ -4,12 +4,13 @@ The repository provides scripts for spliting PE fastq from MGI sequencer platfor
 The current implementation was written by caoshuhuan (caoshuhuan@yeah.net). 
 send email to me if you have any question about this script, I feel appeciate when you report bug to me ! 
 ## Version history
-The current code is v1.0 
+The current code version is v1.0 
 
 v1.1 *(under deverlopment)* :
  - support dual barcodes split
+ - support windows system
 ## Prerequisites, Tutorial and Results
-The script runs on `CentOS 7` or other linux systems on a **64Bit** machine with `Perl 5.26`, for **100Gb** data, It will take about **2 hours** with **1 Gb** memory.
+The script runs on `CentOS 7` or other linux systems on a **64Bit** machine with `Perl 5.26`, for **100Gb** data, It will take about **2 hours** with **1 Gb** memory if final fastqs are uncompress.
  
 ###  Tutorial
 ```
@@ -21,12 +22,14 @@ Usage:
 		*-f  --firstCycle <int>		First cylce of barcode
 		*-l  --lastCycle <int>		Last cycle of barcode
 		*-b  --barcodeList <string>	barcodes list
+		 -c  --compress <Y|N>		compress(.gz) output or not [default: Y]
 		 -o  --outdir <string>		output directory [default: ./]
 		 -h  --help			print help information and exit
 ```
 - `*` means parameter must be provided.
 - the default mismatch value is 2.
 - the default output directory is `./`.
+- the default fastq is compressed in .gz format 
 #### Command line example 
 ```
 perl splitBarcode_PE.pl -r1 read1.fq.gz -r2 read2.fq.gz -e 1 -f 100 -l 110 -b barcode.list -o /path/outdir
@@ -38,18 +41,19 @@ Only barcode name and  barcode sequence need, seperated by `tab` or `space`.  ba
 1	ATGCATCTAA
 2	AGCTCTGGAC
 ```
+ 
 ### Output 
 There are several types of file generated after script finished：
-- barcode_1.fq, barcode_2.fq
+- barcode_1.fq(.gz), barcode_2.fq(.gz)
 - BarcodeStat.txt
 - TagStat.txt
 
 #### - barcode fastq
 The format of fastq name is:
 
-> Chipname_lane_barcode_1.fq : ` V300000000_L01_1.fq` 
+> Chipname_lane_barcode_1.fq.gz : ` V300000000_L01_1.fq.gz` 
 
-> Chipname_lane_barcode_2.fq : ` V300000000_L01_2.fq` 
+> Chipname_lane_barcode_2.fq.gz : ` V300000000_L01_2.fq.gz` 
 
 Chip name and lane name are captured from the read1.fq.gz. 
 Also there is a couple of fastq named `ambiguous_1.fq` and `ambiguous_2.fq`, to keep reads which don't contain any barcode sequence. 
