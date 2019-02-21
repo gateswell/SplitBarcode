@@ -27,9 +27,9 @@ Usage:
 		 -h  --help			print help information and exit
 ```
 - `*` means parameter must be provided.
-- the default mismatch value is 2.
+- the default mismatch value is **2**.
 - the default output directory is `./`.
-- the default fastq is compressed in .gz format 
+- the default fastq is compressed in **.gz** format 
 #### Command line example 
 ```
 perl splitBarcode_PE.pl -r1 read1.fq.gz -r2 read2.fq.gz -e 1 -f 100 -l 110 -b barcode.list -o /path/outdir
@@ -56,7 +56,7 @@ The format of fastq name is:
 > Chipname_lane_barcode_2.fq.gz : ` V300000000_L01_2.fq.gz` 
 
 Chip name and lane name are captured from the read1.fq.gz. 
-Also there is a couple of fastq named `ambiguous_1.fq` and `ambiguous_2.fq`, to keep reads which don't contain any barcode sequence. 
+Also there is a couple of fastq named `ambiguous_1.fq.gz` and `ambiguous_2.fq.gz`, to keep reads which don't contain any barcode sequence. 
 #### - BarcodeStat.txt
 BarcodeStat.txt counts the reads number and barcode split ratio of different barcode separately. In finally, the *Total* lane calculate the total reads number and ratio. 
 The format of BarcodeStat.txt
