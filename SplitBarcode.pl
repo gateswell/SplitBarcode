@@ -58,7 +58,11 @@ my (%tagNum,$am1,$am2,@fq);
 
 my $name=basename($read2);
 $prefix=$1 if $name=~/(.*)\_(\w+)_2\.fq(.gz)?/;
-$outdir=abs_path($outdir);
+if(-e $outdir){
+	$outdir=abs_path($outdir);
+}else{
+	`mkdir -p $outdir`;
+}
 chomp($outdir);
 open my $fh,$bl or die $!;
 #if(uc($compress) eq 'Y'){
