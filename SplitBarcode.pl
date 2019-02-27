@@ -58,7 +58,7 @@ my (%tagNum,$am1,$am2,@fq);
 
 my $name=basename($read2);
 $prefix=$1 if $name=~/(.*)\_(\w+)_2\.fq(.gz)?/;
-if(-e $outdir){
+if(-e abs_path($outdir)){
 	$outdir=abs_path($outdir);
 }else{
 	`mkdir -p $outdir`;
