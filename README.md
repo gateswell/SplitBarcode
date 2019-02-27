@@ -41,7 +41,18 @@ Only barcode name and  barcode sequence need, seperated by `tab` or `space`.  ba
 1	ATGCATCTAA
 2	AGCTCTGGAC
 ```
- 
+The barcode sequence is a reverse complement of sequence between first cycle and last cycle in Read_2 fastq file. If not, transfer them by in-house script. for example:
+if one read from read2 fastq is, and the barcode can be splited perfectly:
+
+```
+@V300000000L1C001R001000000/2
+TGACTCAATCATACGTTTATACCTCCTATAGTAAAAAGTTTTGTCTTCTTTCAGATATAAGTGTCTCTGTGATGCAGGCTGGGTTGGCATCAACTGTGAA**TCATTCCAAC**
++
+FEFGEGGGFGGEEGEFGEEEEBGEFDEEGDBGEGEEAFFGGGDGFEEEEFEFFGFGEFCGDEEFGGEFEEECGBEDEGFFDFFEFEGDGGFFE?EEDCFF71,'962'&)
+``` 
+the barcode sequence in read 2 is **TCATTCCAAC** 
+so the barcode in barcode.list should be **GTTGGAATGA**
+
 ### Output 
 There are several types of file generated after script finished：
 - barcode_1.fq(.gz), barcode_2.fq(.gz)
