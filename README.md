@@ -2,7 +2,7 @@
 The repository provides scripts for spliting PE fastq from MGI sequencer platform by barcodes sequence. 
 ## Author
 The current implementation was written by caoshuhuan (caoshuhuan@yeah.net). 
-send email to me if you have any question about this script, I feel appeciate when you report bug to me ! 
+I would appeciate if you send email to me when you have any question about this script or report bug ! 
 ## Version history
 The current code version is v1.0 
 
