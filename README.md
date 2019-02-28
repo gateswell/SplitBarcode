@@ -42,7 +42,7 @@ barcode will miss if lane starts with `#`, for example: `#96	ATGATCTAGC`.
 1	ATGCATCTAA
 2	AGCTCTGGAC
 ```
-The barcode sequence is a reverse complement of sequence between first cycle and last cycle in Read_2 fastq file. If not, transfer them by in-house script.  
+The barcode sequence is a reverse complement of sequence between first cycle and last cycle in Read_2 fastq file. If not, transform them by in-house script.  
 for example:  
 if one read from read2 fastq is, and the barcode can be splited perfectly:
 
