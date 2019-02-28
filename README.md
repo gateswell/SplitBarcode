@@ -36,12 +36,14 @@ perl splitBarcode_PE.pl -r1 read1.fq.gz -r2 read2.fq.gz -e 1 -f 100 -l 110 -b ba
 ```
 Please make sure the **first cycle number** and **last cycle number** of barcode correctly. 
 #### barcode list example
-Only barcode name and  barcode sequence need, seperated by `tab` or `space`.  barcode will miss if lane starts with `#`, for example: `#96	ATGATCTAGC`.
+Only barcode name and  barcode sequence need, seperated by `tab` or `space`.  
+barcode will miss if lane starts with `#`, for example: `#96	ATGATCTAGC`.
 ```
 1	ATGCATCTAA
 2	AGCTCTGGAC
 ```
-The barcode sequence is a reverse complement of sequence between first cycle and last cycle in Read_2 fastq file. If not, transfer them by in-house script. for example:
+The barcode sequence is a reverse complement of sequence between first cycle and last cycle in Read_2 fastq file. If not, transfer them by in-house script.  
+for example:  
 if one read from read2 fastq is, and the barcode can be splited perfectly:
 
 ```
@@ -50,7 +52,7 @@ TGACTCAATCATACGTTTATACCTCCTATAGTAAAAAGTTTTGTCTTCTTTCAGATATAAGTGTCTCTGTGATGCAGGCT
 +
 FEFGEGGGFGGEEGEFGEEEEBGEFDEEGDBGEGEEAFFGGGDGFEEEEFEFFGFGEFCGDEEFGGEFEEECGBEDEGFFDFFEFEGDGGFFE?EEDCFF71,'962'&)
 ``` 
-the barcode sequence in read 2 is **TCATTCCAAC**, 
+the barcode sequence in read 2 is **TCATTCCAAC**,  
 so the barcode in barcode.list should be **GTTGGAATGA**
 
 ### Output 
@@ -62,14 +64,13 @@ There are several types of file generated after script finished：
 #### - barcode fastq
 The format of fastq name is:
 
-> Chipname_lane_barcode_1.fq.gz : ` V300000000_L01_1.fq.gz` 
-
-> Chipname_lane_barcode_2.fq.gz : ` V300000000_L01_2.fq.gz` 
+> Chipname_lane_barcode_1.fq.gz : ` V300000000_L01_1.fq.gz`  
+> Chipname_lane_barcode_2.fq.gz : ` V300000000_L01_2.fq.gz`  
 
 Chip name and lane name are captured from the read1.fq.gz. 
 Also there is a couple of fastq named `ambiguous_1.fq.gz` and `ambiguous_2.fq.gz`, to keep reads which don't contain any barcode sequence. 
 #### - BarcodeStat.txt
-BarcodeStat.txt counts the reads number and barcode split ratio of different barcode separately. In finally, the *Total* lane calculate the total reads number and ratio. 
+BarcodeStat.txt counts the reads number and barcode split ratio of different barcode separately. In finally, the *Total* lane calculate the total reads number and ratio.  
 The format of BarcodeStat.txt
 ``` 
 #SpeciesNO	Correct	Corrected	Total	Pct
@@ -86,7 +87,7 @@ Total	468560368	27305422	495865790	95.8187%
 |4|Total |Correct and Corrected reads number |
 |5|Pct|percentage|
 #### - TagStat.txt
-Tag means a short sequence locate between the first cylce and last cycle on Read 2 fastq. TagStat.txt exhibit all tag number and percentage. 
+Tag means a short sequence locate between the first cylce and last cycle on Read 2 fastq. TagStat.txt exhibit all tag number and percentage.  
 The format of TagStat.txt is: 
 ```
 #Tag	SpeciesNO	readCount	Pct
