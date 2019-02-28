@@ -68,7 +68,7 @@ The format of fastq name is:
 > Chipname_lane_barcode_2.fq.gz : ` V300000000_L01_2.fq.gz`  
 
 Chip name and lane name are captured from the read1.fq.gz. 
-Also there is a couple of fastq named `ambiguous_1.fq.gz` and `ambiguous_2.fq.gz`, to keep reads which don't contain any barcode sequence. 
+Also there is a couple of fastq named `undecoded_1.fq.gz` and `undecoded_2.fq.gz`, to keep reads which don't contain any barcode sequence. 
 #### - BarcodeStat.txt
 BarcodeStat.txt counts the reads number and barcode split ratio of different barcode separately. In finally, the *Total* lane calculate the total reads number and ratio.  
 The format of BarcodeStat.txt
