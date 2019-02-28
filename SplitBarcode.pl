@@ -179,7 +179,7 @@ close $SS;
 if(uc($compress) eq 'Y'){
 	for my $fastq(@fq){
 		my $gz=$fastq.'.gz';
-		system("echo \"gzip -9c $fastq > $gz \" > $fastq.sh && sh $fastq.sh &");
+		system("echo \"gzip -9 $fastq > $gz \" > $fastq.sh && sh $fastq.sh &");
 	}
 }
 
