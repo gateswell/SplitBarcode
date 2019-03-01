@@ -15,6 +15,7 @@ my $usage=<<USAGE;
 			*-f  --firstCycle <int>		first cylce of barcode
 			*-l  --lastCycle <int>		last cycle of barcode
 			*-b  --barcodeList <string>	barcodes list
+			 -rc --revcom	<Y|N>		generate reverse complement of barcode.list or not
 			 -c  --compress <Y|N>		compress(.gz) output or not [default: Y]
 			 -o  --outdir <string>		output directory [default: ./]
 			 -h  --help			print help information and exit
@@ -29,7 +30,7 @@ my $usage=<<USAGE;
 USAGE
 
 #=============global variants=============
-my ($read1,$read2,$errNum,$fc,$lc,$bl,$compress,$outdir,$help);
+my ($read1,$read2,$errNum,$fc,$lc,$bl,$compress,$outdir,$rc,$help);
 my (%bchash,$prefix,$ambo1,$ambo2);
 #=========================================
 GetOptions(
@@ -39,6 +40,7 @@ GetOptions(
 	"firstCycle|f=i"=>\$fc,
 	"lastCycle|l=i"=>\$lc,
 	"barcodeList|b=s"=>\$bl,
+	"revcom|rc:s"=>\$rc,
 	"compress|c:s"=>\$compress,
 	"outdir|o:s"=>\$outdir,
 	"help|h:s"=>\$help
@@ -46,6 +48,7 @@ GetOptions(
 $errNum ||= 2;
 $outdir ||= `pwd`;
 $compress ||= 'Y';
+$rc ||= 'Y';
 
 if(!$read1 || !$read2 || !$fc || !$lc || !$bl || $help ){
 	die "$usage";
@@ -58,13 +61,13 @@ my (%tagNum,$am1,$am2,@fq);
 
 my $name=basename($read2);
 $prefix=$1 if $name=~/(.*)\_(\w+)_2\.fq(.gz)?/;
-if(-e abs_path($outdir)){
-	$outdir=abs_path($outdir);
-}else{
+unless(-e $outdir){
+	print STDERR "$outdir: No such directory, but we will creat it\n";
 	`mkdir -p $outdir`;
 }
+$outdir=abs_path($outdir);
 chomp($outdir);
-open my $fh,$bl or die $!;
+open my $fh,$bl or die "$bl No such file, check it !\n$!";
 #if(uc($compress) eq 'Y'){
 #	open $am1,"|gzip -9 >$outdir/$prefix\_ambiguous_1.fq.gz" or die $!;
 #	open $am2,"|gzip -9 >$outdir/$prefix\_ambiguous_2.fq.gz" or die $!;
@@ -84,8 +87,12 @@ while(<$fh>){	#1	ATGCATCTAA
 	next if /^#/;
 	chomp;
 	my @tmp=split /\s+/,$_;
-	$tmp[1]=reverse(uc($tmp[1]));
-	$tmp[1]=~tr/ATCGN/TAGCN/;
+	if(uc($rc) eq 'Y'){
+		$tmp[1]=reverse(uc($tmp[1]));
+		$tmp[1]=~tr/ATCGN/TAGCN/;
+	}else{
+		$tmp[1]=uc($tmp[1]);
+	}
 	$oribar{$tmp[1]} =1;
 	&bar_hash($tmp[1],$tmp[0],$errNum,\%barhash);
 #	if(uc($compress) eq 'Y'){
