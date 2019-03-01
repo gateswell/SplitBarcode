@@ -22,6 +22,7 @@ Usage:
 		*-f  --firstCycle <int>		First cylce of barcode
 		*-l  --lastCycle <int>		Last cycle of barcode
 		*-b  --barcodeList <string>	barcodes list
+		 -rc --revcom	<Y|N>		generate reverse complement of barcode.list or not
 		 -c  --compress <Y|N>		compress(.gz) output or not [default: Y]
 		 -o  --outdir <string>		output directory [default: ./]
 		 -h  --help			print help information and exit
@@ -42,7 +43,7 @@ barcode will miss if lane starts with `#`, for example: `#96	ATGATCTAGC`.
 1	ATGCATCTAA
 2	AGCTCTGGAC
 ```
-The barcode sequence is a reverse complement of sequence between first cycle and last cycle in Read_2 fastq file. If not, transform them by in-house script.  
+The default barcode sequence is a reverse complement of sequence between first cycle and last cycle in Read_2 fastq file. If not, set parameter `-rc N`.  
 for example:  
 if one read from read2 fastq is, and the barcode can be splited perfectly:
 
@@ -81,7 +82,7 @@ Total	468560368	27305422	495865790	95.8187%
 ```
 |column|name|description|
 |--| -------- | --------|
-|1|SpeciesNO |bacode name |
+|1|SpeciesNO |barcode name |
 |2|Correct       |the number of reads without mismatch | 
 |3|Corrected |the number of reads within mismatch value|
 |4|Total |Correct and Corrected reads number |
