@@ -10,7 +10,7 @@ v1.1 *(under deverlopment)* :
  - support dual barcodes split
  - support windows system
 ## Prerequisites, Tutorial and Results
-The script runs on `CentOS 7` or other linux systems on a **64Bit** machine with `Perl 5.26`, for **100Gb** data, It will take about **2 hours** with **1 Gb** memory if final fastqs are uncompress.
+The script runs on `CentOS 7` or other linux systems on a **64Bit** machine with `Perl 5.26`, for **100Gb** data, It will take about **2 hours** with **1 Gb** memory if final fastqs uncompress.
  
 ###  Tutorial
 ```
@@ -33,7 +33,7 @@ Usage:
 - the default fastq is compressed in **.gz** format 
 #### Command line example 
 ```
-perl splitBarcode_PE.pl -r1 read1.fq.gz -r2 read2.fq.gz -e 1 -f 100 -l 110 -b barcode.list -o /path/outdir
+perl SplitBarcode.pl -r1 read1.fq.gz -r2 read2.fq.gz -e 1 -f 100 -l 110 -b barcode.list -r N -o /path/outdir -c Y
 ```
 Please make sure the **first cycle number** and **last cycle number** of barcode correctly. 
 #### barcode list example
