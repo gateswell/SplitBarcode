@@ -60,7 +60,7 @@ my (%tagNum,$am1,$am2,@fq);
 #=========================
 
 my $name=basename($read2);
-$prefix=$1 if $name=~/(.*)\_(\w+_)?2\.fq(.gz)?/;
+$prefix=$1 if $name=~/(.*)\_(\w+)_2\.fq(.gz)?/;
 unless(-e chomp($outdir)){
 	print STDERR "$outdir: No such directory, but we will creat it\n";
 	`mkdir -p $outdir`;
