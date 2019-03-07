@@ -2,7 +2,7 @@
 该脚本只用于拆分MGI平台测序下机的PE数据。  
 ## Author
 作者： caoshuhuan (caoshuhuan@yeah.net)。  
-如果客户对脚本有疑问或者报bug，联系上面的邮箱即可。  
+如果对脚本有疑问或者报bug，随时欢迎联系。  
 ## Version history
 当前版本号 v1.0  
 
