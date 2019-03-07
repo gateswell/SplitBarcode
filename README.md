@@ -5,7 +5,10 @@ The current implementation was written by caoshuhuan (caoshuhuan@yeah.net).
 I would appeciate if you send email to me when you have any question about this script or report bug ! 
 ## Version history
 The current code version is v1.0 
-
+v1.0 
+ - split PE fastq with single barcode 
+ - outputs are compressed
+ - some statistical results provided
 v1.1 *(under deverlopment)* :
  - support dual barcodes split
  - support windows system
