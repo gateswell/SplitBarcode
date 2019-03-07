@@ -15,7 +15,7 @@ v1.1 *(开发中)* :
  - 支持双barcode拆分
  - 支持拆分SE数据
 ## Prerequisites, Tutorial and Results
-系统要求：`Linux` 
+系统要求：`Linux`  
 内存：建议**1Gb**以上  
 存储：建议**1Tb**以上  
 Perl版本：建议5.16及以上  
@@ -39,7 +39,7 @@ Usage:
 - `*` 必选参数。
 - 默认mismatch值为**2**.
 - 默认输出到当前目录`./`.
-- 默认生成压缩文件，且格式为**.gz**
+- 默认生成压缩文件，且格式为**gz** 
 - 默认以**反向互补**方式拆分
 #### Command line example 
 ```
