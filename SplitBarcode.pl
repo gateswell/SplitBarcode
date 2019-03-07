@@ -60,8 +60,8 @@ my (%tagNum,$am1,$am2,@fq);
 #=========================
 
 my $name=basename($read2);
-$prefix=$1 if $name=~/(.*)\_(\w+)_2\.fq(.gz)?/;
-unless(-e $outdir){
+$prefix=$1 if $name=~/(.*)\_(\w+_)?2\.fq(.gz)?/;
+unless(-e chomp($outdir)){
 	print STDERR "$outdir: No such directory, but we will creat it\n";
 	`mkdir -p $outdir`;
 }
@@ -157,7 +157,7 @@ close $rd1;close $rd2;
 close $am1;close $am2;
 
 my($totalcorrect,$totalcorrected,$totalbarreads,$totalpct);
-for my $seq(sort {$barhash{$a}<=>$barhash{$b}} keys %oribar){
+for my $seq(sort {$barhash{$a} cmp $barhash{$b}} keys %oribar){
 	my $BartotalReads = $correctBar{$barhash{$seq}}+$correctedBar{$barhash{$seq}};
 	my $pct = ($BartotalReads/$totalReadsNum)*100;
 	$totalcorrect += $correctBar{$barhash{$seq}};
@@ -183,12 +183,22 @@ for my $seq(sort {$tagNum{$b}<=>$tagNum{$a}} keys %tagNum){
 	}
 }
 close $SS;
+
 if(uc($compress) eq 'Y'){
+	open my $gzip,">$outdir/$prefix\_gzip.sh" or die $!;
 	for my $fastq(@fq){
 		my $gz=$fastq.'.gz';
-		system("echo \"gzip -9 $fastq > $gz \" > $fastq.sh && sh $fastq.sh &");
-	}
+		if(-e $gz){
+			system("rm -rf $gz");
+		}
+		system("echo -e 'if \[ -e \"$gz\" \]; then \n\trm -rf $gz \nfi\ngzip -9 $fastq ' > $fastq.sh ");
+		print $gzip "sh $fastq.sh & \n";
+	} 
+	close $gzip;
+	system("sh $outdir/$prefix\_gzip.sh");
+	system("rm $outdir/*fq.sh $outdir/$prefix\_gzip.sh ");
 }
+
 
 #=============subroutine==================
 sub bar_hash{
