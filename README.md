@@ -15,6 +15,11 @@ v1.1 *(under deverlopment)* :
  - support dual barcodes split
  - support windows system
 ## Prerequisites, Tutorial and Results
+System: `Linux`  
+Memmory: **1 Gb** or above  
+Storage: **1 Tb** or above  
+Perl version: `5.16` or above  
+
 The script runs on `CentOS 7` or other linux systems on a **64Bit** machine with `Perl 5.26`, for **100Gb** data, It will take about **2 hours** with **1 Gb** memory if final fastqs uncompress.
  
 ###  Tutorial
