@@ -45,7 +45,7 @@ barcode will miss if lane starts with `#`, for example: `#96	ATGATCTAGC`.
 ```
 The default barcode sequence is a reverse complement of sequence between first cycle and last cycle in Read_2 fastq file. If not, set parameter `-rc N`.  
 for example:  
-if one read from read2 fastq is, and the barcode can be splited perfectly:
+if one read from read2 fastq is:
 
 ```
 @V300000000L1C001R001000000/2
@@ -54,7 +54,7 @@ TGACTCAATCATACGTTTATACCTCCTATAGTAAAAAGTTTTGTCTTCTTTCAGATATAAGTGTCTCTGTGATGCAGGCT
 FEFGEGGGFGGEEGEFGEEEEBGEFDEEGDBGEGEEAFFGGGDGFEEEEFEFFGFGEFCGDEEFGGEFEEECGBEDEGFFDFFEFEGDGGFFE?EEDCFF71,'962'&)
 ``` 
 the barcode sequence in read 2 is **TCATTCCAAC**,  
-so the barcode in barcode.list should be **GTTGGAATGA**
+the read can be splited perfectly when the barcode provided is **GTTGGAATGA** or **TCATTCCAAC**  
 
 ### Output 
 There are several types of file generated after script finished：
