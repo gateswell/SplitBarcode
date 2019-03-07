@@ -179,7 +179,7 @@ for my $seq(sort {$tagNum{$b}<=>$tagNum{$a}} keys %tagNum){
 	}
 	else{
 		#print $SS "$seq\tunknown\t$tagNum{$seq}\t$pct\n";
-		printf $SS "%s\tunknow\t%d\t%.2f%%\n",$seq,$tagNum{$seq},$pct;
+		printf $SS "%s\tunknown\t%d\t%.2f%%\n",$seq,$tagNum{$seq},$pct;
 	}
 }
 close $SS;
