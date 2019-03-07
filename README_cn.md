@@ -2,14 +2,15 @@
 该脚本只用于拆分MGI平台测序下机的PE数据。  
 ## Author
 作者： caoshuhuan (caoshuhuan@yeah.net)。  
-如果对脚本有疑问或者报bug，随时欢迎联系。  
+如果对脚本有疑问或者报bug，欢迎随时联系我。  
 ## Version history
 当前版本号 v1.0  
 
 v1.0:  
  - 拆分单barcode PE下机数据  
  - 可生成压缩文件  
- - 拆分统计结果（详见下方教程）
+ - 拆分统计结果（详见下方教程） 
+ 
 v1.1 *(开发中)* :  
  - 支持双barcode拆分
  - 支持拆分SE数据
