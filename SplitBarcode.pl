@@ -185,18 +185,19 @@ for my $seq(sort {$tagNum{$b}<=>$tagNum{$a}} keys %tagNum){
 close $SS;
 
 if(uc($compress) eq 'Y'){
-	open my $gzip,">$outdir/$prefix\_gzip.sh" or die $!;
+	#open my $gzip,">$outdir/$prefix\_gzip.sh" or die $!;
 	for my $fastq(@fq){
 		my $gz=$fastq.'.gz';
 		if(-e $gz){
 			system("rm -rf $gz");
 		}
-		system("echo -e 'if \[ -e \"$gz\" \]; then \n\trm -rf $gz \nfi\ngzip -9 $fastq ' > $fastq.sh ");
-		print $gzip "sh $fastq.sh & \n";
+		system("gzip -9 $fastq");
+		#system("echo -e 'if \[ -e \"$gz\" \]; then \n\trm -rf $gz \nfi\ngzip -9 $fastq ' > $fastq.sh ");
+		#print $gzip "sh $fastq.sh & \n";
 	} 
-	close $gzip;
-	system("sh $outdir/$prefix\_gzip.sh");
-	system("rm $outdir/*fq.sh $outdir/$prefix\_gzip.sh ");
+	#close $gzip;
+	#system("sh $outdir/$prefix\_gzip.sh");
+	#system("rm $outdir/*fq.sh $outdir/$prefix\_gzip.sh ");
 }
 
 
