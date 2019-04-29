@@ -36,7 +36,7 @@ Usage:
 		 -e  --errNum <int>		mismatch number [default: 2]
 		*-f  --firstCycle <int>		First cylce of barcode
 		*-b  --barcodeList <string>	barcodes list
-		 -rc --revcom	<Y|N>		generate reverse complement of barcode.list or not
+		 -rc --revcom	<Y|N>		generate reverse complement of barcode.list or not [default: Y]
 		 -c  --compress <Y|N>		compress(.gz) output or not [default: Y]
 		 -o  --outdir <string>		output directory [default: ./]
 		 -h  --help			print help information and exit
