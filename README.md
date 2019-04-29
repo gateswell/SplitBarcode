@@ -4,16 +4,19 @@ The repository provides scripts for spliting PE fastq from MGI sequencer platfor
 The current implementation was written by caoshuhuan (caoshuhuan@yeah.net). 
 I would appeciate if you send email to me when you have any question about this script or report bug ! 
 ## Version history
-The current code version is v1.0  
+The current code version is v1.0.1  
 
 v1.0  
  - split PE fastq with single barcode 
- - outputs are compressed
+ - outputs are compressed 
  - some statistical results provided  
-
+v1.0.1 
+ - delete parameter `-l`
+ - modified compress method to reduce process time  
+ - submit `SplitDualBarcodes.pl` for MGI dual barcodes multiplexing, type in `perl SplitDualBarcodes.pl -h` to get the tutorial of this script  
 v1.1 *(under deverlopment)* :
- - support dual barcodes split
- - support windows system
+ - intergrate single and dual barcodes multiplexing module 
+ - support windows system 
 ## Prerequisites, Tutorial and Results
 System: `Linux`  
 Memmory: **1 Gb** or above  
@@ -40,12 +43,12 @@ Usage:
 - `*` means parameter must be provided.
 - the default mismatch value is **2**.
 - the default output directory is `./`.
-- the default fastq is compressed in **.gz** format 
+- the fastq will be compressed in **.gz** format when `-c Y` has been set and run `gzip.main.sh` after split process finished. 
 #### Command line example 
 ```
-perl SplitBarcode.pl -r1 read1.fq.gz -r2 read2.fq.gz -e 1 -f 100 -l 110 -b barcode.list -r N -o /path/outdir -c Y
+perl SplitBarcode.pl -r1 read1.fq.gz -r2 read2.fq.gz -e 1 -f 101 -l 110 -b barcode.list -r N -o /path/outdir -c Y
 ```
-Please make sure the **first cycle number** and **last cycle number** of barcode correctly. 
+Please make sure the **first cycle number** of barcode correctly. 
 #### barcode list example
 Only barcode name and  barcode sequence need, seperated by `tab` or `space`.  
 barcode will miss if lane starts with `#`, for example: `#96	ATGATCTAGC`.
