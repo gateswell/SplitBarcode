@@ -47,7 +47,7 @@ Usage:
 - the fastq will be compressed in **.gz** format when `-c Y` has been set and run `gzip.main.sh` after split process finished. 
 #### Command line example 
 ```
-perl SplitBarcode.pl -r1 read1.fq.gz -r2 read2.fq.gz -e 1 -f 101 -l 110 -b barcode.list -r N -o /path/outdir -c Y
+perl SplitBarcode.pl -r1 read1.fq.gz -r2 read2.fq.gz -e 1 -f 101 -b barcode.list -r N -o /path/outdir -c Y
 ```
 Please make sure the **first cycle number** of barcode correctly. 
 #### barcode list example
