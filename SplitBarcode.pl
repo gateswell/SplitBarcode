@@ -13,14 +13,13 @@ my $usage=<<USAGE;
 			*-r2 --read2 <string>		read2.fq.gz
 			 -e  --errNum <int>		mismatch number [default: 2]
 			*-f  --firstCycle <int>		first cylce of barcode
-			*-l  --lastCycle <int>		last cycle of barcode
 			*-b  --barcodeList <string>	barcodes list
 			 -rc --revcom	<Y|N>		generate reverse complement of barcode.list or not
 			 -c  --compress <Y|N>		compress(.gz) output or not [default: Y]
 			 -o  --outdir <string>		output directory [default: ./]
 			 -h  --help			print help information and exit
 	Example:
-		perl $0 -r1 read1.fq.gz -r2 read2.fq.gz -e 2 -f 100 -l 110 -b barcode.list -o /path/outdir
+		perl $0 -r1 read1.fq.gz -r2 read2.fq.gz -e 2 -f 101 -b barcode.list -o /path/outdir
 		
 	============barcode.list===========
 	#barcodeNum	barcodeSeq
@@ -30,7 +29,7 @@ my $usage=<<USAGE;
 USAGE
 
 #=============global variants=============
-my ($read1,$read2,$errNum,$fc,$lc,$bl,$compress,$outdir,$rc,$help);
+my ($read1,$read2,$errNum,$fc,$bl,$compress,$outdir,$rc,$help);
 my (%bchash,$prefix,$ambo1,$ambo2);
 #=========================================
 GetOptions(
@@ -38,7 +37,6 @@ GetOptions(
 	"read2|r2=s"=>\$read2,
 	"errNum|e:i"=>\$errNum,
 	"firstCycle|f=i"=>\$fc,
-	"lastCycle|l=i"=>\$lc,
 	"barcodeList|b=s"=>\$bl,
 	"revcom|rc:s"=>\$rc,
 	"compress|c:s"=>\$compress,
@@ -46,17 +44,23 @@ GetOptions(
 	"help|h:s"=>\$help
 );
 $errNum ||= 2;
+#my $os=$^O;
+#if ($os eq 'linux'){
 $outdir ||= `pwd`;
+#}
+#elsif($os eq 'MSWin32'){
+#	$outdir ||= `echo %cd%`;
+#}
 $compress ||= 'Y';
 $rc ||= 'Y';
 
-if(!$read1 || !$read2 || !$fc || !$lc || !$bl || $help ){
+if(!$read1 || !$read2 || !$fc || !$bl || $help ){
 	die "$usage";
 }
 
 #========global variables==========
 my (%barhash,%oh,%oribar,%correctBar,%correctedBar,%unknownBar,$totalReadsNum);
-my (%tagNum,$am1,$am2,@fq);
+my (%tagNum,$am1,$am2,@fq,$barcode_len);
 #=========================
 
 my $name=basename($read2);
@@ -94,17 +98,12 @@ while(<$fh>){	#1	ATGCATCTAA
 		$tmp[1]=uc($tmp[1]);
 	}
 	$oribar{$tmp[1]} =1;
+	$barcode_len=length($tmp[1]);
 	&bar_hash($tmp[1],$tmp[0],$errNum,\%barhash);
-#	if(uc($compress) eq 'Y'){
-#		open $oh{$barhash{$tmp[1]}}[0],"|gzip -9 >$outdir/$prefix\_$tmp[0]\_1.fq.gz" or die $!;
-#		open $oh{$barhash{$tmp[1]}}[1],"|gzip -9 >$outdir/$prefix\_$tmp[0]\_2.fq.gz" or die $!;
-#	}
-#	else{
 	open $oh{$barhash{$tmp[1]}}[0],">$outdir/$prefix\_$tmp[0]\_1.fq" or die $!;
 	open $oh{$barhash{$tmp[1]}}[1],">$outdir/$prefix\_$tmp[0]\_2.fq" or die $!;
 	push @fq,"$outdir/$prefix\_$tmp[0]\_1.fq";
 	push @fq,"$outdir/$prefix\_$tmp[0]\_2.fq";
-#	}
 }
 close $fh;
 my($rd1,$rd2);
@@ -128,11 +127,11 @@ while(<$rd1>){
 	my $qual2= <$rd2>;
 	$totalReadsNum ++;
 	chomp($head1,$seq1,$plus1,$qual1,$head2,$seq2,$plus2,$qual2);
-	my $barseq=substr($seq2,$fc-1,$lc-$fc+1);
+	my $barseq=substr($seq2,$fc-1,$barcode_len+1);
 	$tagNum{$barseq} ++;
 	if(exists $barhash{$barseq}){
-		my $spitseq2=substr($seq2,0,$fc-1).substr($seq2,$lc,);
-		my $spitqual2=substr($qual2,0,$fc-1).substr($qual2,$lc,);
+		my $spitseq2=substr($seq2,0,$fc-1).substr($seq2,$fc+$barcode_len-1,);
+		my $spitqual2=substr($qual2,0,$fc-1).substr($qual2,$fc+$barcode_len-1,);
 		#my $fh1=$oh{$barhash{$barseq}}[0];my$fh2=$oh{$barhash{$barseq}}[1];
 		$oh{$barhash{$barseq}}[0]->print("$head1\n$seq1\n$plus1\n$qual1\n");
 		$oh{$barhash{$barseq}}[1]->print("$head2\n$spitseq2\n$plus2\n$spitqual2\n");
@@ -146,8 +145,8 @@ while(<$rd1>){
 		}
 	}
 	else{
-		my $spitseq2=substr($seq2,0,$fc-1).substr($seq2,$lc,);
-		my $spitqual2=substr($qual2,0,$fc-1).substr($qual2,$lc,);
+		my $spitseq2=substr($seq2,0,$fc-1).substr($seq2,$fc+$barcode_len-1,);
+		my $spitqual2=substr($qual2,0,$fc-1).substr($qual2,$fc+$barcode_len-1,);
 		print $am1 "$head1\n$seq1\n$plus1\n$qual1\n";
 		print $am2 "$head2\n$spitseq2\n$plus2\n$spitqual2\n";
 		$unknownBar{$barseq} +=1;
@@ -185,17 +184,21 @@ for my $seq(sort {$tagNum{$b}<=>$tagNum{$a}} keys %tagNum){
 close $SS;
 
 if(uc($compress) eq 'Y'){
-	#open my $gzip,">$outdir/$prefix\_gzip.sh" or die $!;
+	open my $main,">$outdir/gzip.main.sh" or die $!;
 	for my $fastq(@fq){
+		my $prefix = basename($fastq);
+		open my $gzip,">$outdir/$prefix\_gzip.sh" or die $!;
 		my $gz=$fastq.'.gz';
 		if(-e $gz){
 			system("rm -rf $gz");
+			print $gzip "gzip -9 $fastq\n";
 		}
-		system("gzip -9 $fastq");
+		#system("gzip -9 $fastq");
 		#system("echo -e 'if \[ -e \"$gz\" \]; then \n\trm -rf $gz \nfi\ngzip -9 $fastq ' > $fastq.sh ");
-		#print $gzip "sh $fastq.sh & \n";
+		print $gzip "sh $fastq\_gzip.sh & \n";
+		close $gzip;
 	} 
-	#close $gzip;
+	close $main;
 	#system("sh $outdir/$prefix\_gzip.sh");
 	#system("rm $outdir/*fq.sh $outdir/$prefix\_gzip.sh ");
 }
