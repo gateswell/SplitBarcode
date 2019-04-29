@@ -1,4 +1,5 @@
 # SplitBarcode
+![version](https://img.shields.io/badge/version-v1.0.1-green.svg)	![license](https://img.shields.io/badge/license-MIT-green.svg)	[![language](https://img.shields.io/badge/language-EN-green.svg)](https://github.com/gateswell/SplitBarcode)	[![GitHub stars](https://img.shields.io/github/stars/gateswell/SplitBarcode.svg?style=social)](https://github.com/gateswell/SplitBarcode/stargazers)  
 该脚本只用于拆分MGI平台测序下机的PE数据。  
 ## Author
 作者： caoshuhuan (caoshuhuan@yeah.net)。  
