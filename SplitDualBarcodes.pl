@@ -54,7 +54,7 @@ if(!$read1 || !$read2 || !$fc || !$bl || $help ){
 
 #========global variables==========
 my (%barhash,%oh,%oribar,%correctBar,%correctedBar,%unknownBar,$totalReadsNum);
-my (%tagNum,$am1,$am2,@fq,$barcode_len,%ori_tag,%mis_barNum);
+my (%tagNum,$am1,$am2,@fq,$barcode_len,$barcode_len1,$barcode_len2,%ori_tag,%mis_barNum);
 #=========================
 
 my $name=basename($read2);
@@ -97,7 +97,7 @@ while(<$fh>){	#1	ATGCATCTAA	TATAGCCTAG
 		$barcode_seq=$tmp[1].$tmp[2];	#ATGCATCTAATATAGCCTAG
 	}
 	$oribar{$barcode_seq} =1;
-	$barcode_len=length($barcode_seq);
+	$barcode_len1=length($tmp[1]);$barcode_len2=length($tmp[2]);
 	&bar_hash($barcode_seq,$tmp[0],$errNum,\%barhash);
 	open $oh{$barhash{$barcode_seq}}[0],">$outdir/$prefix\_$tmp[0]\_1.fq" or die $!;
 	open $oh{$barhash{$barcode_seq}}[1],">$outdir/$prefix\_$tmp[0]\_2.fq" or die $!;
@@ -105,6 +105,7 @@ while(<$fh>){	#1	ATGCATCTAA	TATAGCCTAG
 	push @fq,"$outdir/$prefix\_$tmp[0]\_2.fq";
 }
 close $fh;
+$barcode_len=$barcode_len1+$barcode_len2;
 for my $line_seq(keys %barhash){
 		$mis_barNum{$line_seq} ++;
 		if ($mis_barNum{$line_seq} >=2){print STDERR "Set a smaller mismatch value because of same barcodes\($barhash{$line_seq}\t$line_seq\) are same!\n";exit;}
@@ -132,7 +133,7 @@ while(<$rd1>){
 	chomp($head1,$seq1,$plus1,$qual1,$head2,$seq2,$plus2,$qual2);
 	my $barseq=substr($seq2,$fc-1,$barcode_len+1);
 	$tagNum{$barseq} ++;
-	$ori_tag{$barseq} = substr($seq2,$fc-1,$barcode_len/2+1)."-".substr($seq2,$fc+$barcode_len/2-1,$barcode_len+1);
+	$ori_tag{$barseq} = substr($seq2,$fc-1,$barcode_len1+1)."-".substr($seq2,$fc+$barcode_len1-1,$barcode_len2+1);
 	if(exists $barhash{$barseq}){
 		my $spitseq2=substr($seq2,0,$fc-1).substr($seq2,$fc+$barcode_len-1,);
 		my $spitqual2=substr($qual2,0,$fc-1).substr($qual2,$fc+$barcode_len-1,);
