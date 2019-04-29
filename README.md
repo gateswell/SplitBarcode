@@ -1,5 +1,5 @@
 # SplitBarcode
-![version](https://img.shields.io/badge/version-v1.0.1-green.svg)	![license](https://img.shields.io/badge/license-MIT-green.svg)	[![language](https://img.shields.io/badge/language-CN-red.svg)](https://github.com/gateswell/SplitBarcode/blob/master/README_cn.md)
+![version](https://img.shields.io/badge/version-v1.0.1-green.svg)	![license](https://img.shields.io/badge/license-MIT-green.svg)	[![language](https://img.shields.io/badge/language-CN-red.svg)](https://github.com/gateswell/SplitBarcode/blob/master/README_cn.md)  
 The repository provides scripts for spliting PE fastq from MGI sequencer platform by barcodes sequence. 
 ## Author
 The current implementation was written by caoshuhuan (caoshuhuan@yeah.net). 
