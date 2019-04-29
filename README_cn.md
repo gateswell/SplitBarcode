@@ -4,16 +4,21 @@
 作者： caoshuhuan (caoshuhuan@yeah.net)。  
 如果对脚本有疑问或者报bug，欢迎随时联系我。  
 ## Version history
-当前版本号 v1.0  
+当前版本号 v1.0.1  
 
 v1.0:  
  - 拆分单barcode PE下机数据  
  - 可生成压缩文件  
  - 拆分统计结果（详见下方教程） 
- 
+
+v1.0.1 
+ - 删除参数`-l` 
+ - fastq压缩方式，改为程序外自行压缩，节省运行时间 
+ - 上传拆分MGI双barcodes的临时脚本：`SplitDualBarcodes.pl`，该脚本使用方法使用`perl SplitDualBarcodes.pl -h`查看 
+
 v1.1 *(开发中)* :  
- - 支持双barcode拆分
- - 支持拆分SE数据
+ - 整合单双barcode拆分模块 
+ - 支持拆分SE数据 
 ## Prerequisites, Tutorial and Results
 系统要求：`Linux`  
 内存：建议**1Gb**以上  
@@ -27,25 +32,24 @@ Usage:
 	perl splitBarcode_PE.pl [options]
 		*-r1 --read1 <string>		read1.fq.gz
 		*-r2 --read2 <string>		read2.fq.gz
-		 -e  --errNum <int>		mismatch number [default: 2]
-		*-f  --firstCycle <int>		First cylce of barcode
-		*-l  --lastCycle <int>		Last cycle of barcode
-		*-b  --barcodeList <string>	barcodes list
-		 -rc --revcom	<Y|N>		generate reverse complement of barcode.list or not
-		 -c  --compress <Y|N>		compress(.gz) output or not [default: Y]
-		 -o  --outdir <string>		output directory [default: ./]
-		 -h  --help			print help information and exit
+		 -e  --errNum <int>		mismatch数[默认值: 2]
+		*-f  --firstCycle <int>		barcode的第一个cycle数
+		*-b  --barcodeList <string>	barcodes列表
+		 -rc --revcom	<Y|N>		是否对barcodes列表内的barcode序列进行反向互补处理[默认: Y]
+		 -c  --compress <Y|N>		结果是否压缩(.gz)[默认: Y]
+		 -o  --outdir <string>		结果地址 [默认: 当前地址]
+		 -h  --help			打印帮助文件及退出
 ```
 - `*` 必选参数。
 - 默认mismatch值为**2**.
 - 默认输出到当前目录`./`.
-- 默认生成压缩文件，且格式为**gz** 
+- 默认最终生成压缩文件，且格式为**gz**，需要在拆分结束后，自行运行`gzip.main.sh`脚本 
 - 默认以**反向互补**方式拆分
 #### Command line example 
 ```
-perl SplitBarcode.pl -r1 read1.fq.gz -r2 read2.fq.gz -e 1 -f 100 -l 110 -b barcode.list -r N -o /path/outdir -c Y
+perl SplitBarcode.pl -r1 read1.fq.gz -r2 read2.fq.gz -e 1 -f 101 -b barcode.list -r N -o /path/outdir -c Y
 ```
-请先确认**first cycle number**和**last cycle number**准确  
+请先确认**first cycle number**准确  
  
 #### barcode list example
 barcode名和barcode序列以制表符`tab`或空格`space`分开  
