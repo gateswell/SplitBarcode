@@ -10,10 +10,12 @@ v1.0
  - split PE fastq with single barcode 
  - outputs are compressed 
  - some statistical results provided  
+
 v1.0.1 
  - delete parameter `-l`
  - modified compress method to reduce process time  
  - submit `SplitDualBarcodes.pl` for MGI dual barcodes multiplexing, type in `perl SplitDualBarcodes.pl -h` to get the tutorial of this script  
+
 v1.1 *(under deverlopment)* :
  - intergrate single and dual barcodes multiplexing module 
  - support windows system 
