@@ -11,7 +11,7 @@ v1.0:
  - 可生成压缩文件  
  - 拆分统计结果（详见下方教程） 
 
-v1.0.1 
+v1.0.1: 
  - 删除参数`-l` 
  - fastq压缩方式，改为程序外自行压缩，节省运行时间 
  - 上传拆分MGI双barcodes的临时脚本：`SplitDualBarcodes.pl`，该脚本使用方法使用`perl SplitDualBarcodes.pl -h`查看 
