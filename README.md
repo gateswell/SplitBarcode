@@ -35,7 +35,6 @@ Usage:
 		*-r2 --read2 <string>		read2.fq.gz
 		 -e  --errNum <int>		mismatch number [default: 2]
 		*-f  --firstCycle <int>		First cylce of barcode
-		*-l  --lastCycle <int>		Last cycle of barcode
 		*-b  --barcodeList <string>	barcodes list
 		 -rc --revcom	<Y|N>		generate reverse complement of barcode.list or not
 		 -c  --compress <Y|N>		compress(.gz) output or not [default: Y]
