@@ -193,11 +193,14 @@ if(uc($compress) eq 'Y'){
 			system("rm -rf $gz");
 			print $gzip "gzip -9 $fastq\n";
 		}
+		else{
+			print $gzip "gzip -9 $fastq\n";
+		}
 		#system("gzip -9 $fastq");
 		#system("echo -e 'if \[ -e \"$gz\" \]; then \n\trm -rf $gz \nfi\ngzip -9 $fastq ' > $fastq.sh ");
-		print $gzip "sh $fastq\_gzip.sh & \n";
+		print $main "sh $fastq\_gzip.sh &\n";
 		close $gzip;
-	} 
+	}
 	close $main;
 	#system("sh $outdir/$prefix\_gzip.sh");
 	#system("rm $outdir/*fq.sh $outdir/$prefix\_gzip.sh ");
