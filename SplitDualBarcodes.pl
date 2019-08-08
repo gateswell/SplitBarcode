@@ -43,7 +43,13 @@ GetOptions(
 	"outdir|o:s"=>\$outdir,
 	"help|h:s"=>\$help
 );
-$errNum ||= 1;
+#$errNum ||= 1;
+if(defined $errNum && $errNum == 0){
+	$errNum=0;
+}
+elsif(!defined $errNum ){
+	$errNum ||= 1;
+}
 $outdir ||= `pwd`;
 $compress ||= 'Y';
 $rc ||= 'Y';
