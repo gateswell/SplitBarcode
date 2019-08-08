@@ -10,19 +10,20 @@ my $usage=<<USAGE;
 	Usage:
 		perl $0 [options]
 			*-r1 --read1 <string>		read1.fq.gz
-			*-r2 --read2 <string>		read2.fq.gz
-			 -e  --errNum <int>		mismatch number [default: 2]
+			 -r2 --read2 <string>		read2.fq.gz, if not provided, it will be SE
+			 -e  --errNum <int>		mismatch number [default: 2 for PE, 1 for SE]
 			*-f  --firstCycle <int>		first cylce of barcode
 			*-b  --barcodeList <string>	barcodes list
-			 -rc --revcom	<Y|N>		generate reverse complement of barcode.list or not
+			 -rc --revcom	<Y|N>		generate reverse complement of barcode.list or not [default: Y]
 			 -c  --compress <Y|N>		compress(.gz) output or not [default: Y]
 			 -o  --outdir <string>		output directory [default: ./]
 			 -h  --help			print help information and exit
 	Example:
 		perl $0 -r1 read1.fq.gz -r2 read2.fq.gz -e 2 -f 101 -b barcode.list -o /path/outdir
+		perl $0 -r1 read1.fq.gz -e 1 -f 101 -b barcode.list -o /path/outdir
 		
 	============barcode.list===========
-	#barcodeNum	barcodeSeq
+	#barcodeName	barcodeSeq
 	1	ATGCATCTAA
 	2	AGCTCTGGAC
 	===================================
@@ -34,7 +35,7 @@ my (%bchash,$prefix,$ambo1,$ambo2);
 #=========================================
 GetOptions(
 	"read1|r1=s"=>\$read1,
-	"read2|r2=s"=>\$read2,
+	"read2|r2:s"=>\$read2,
 	"errNum|e:i"=>\$errNum,
 	"firstCycle|f=i"=>\$fc,
 	"barcodeList|b=s"=>\$bl,
@@ -43,7 +44,8 @@ GetOptions(
 	"outdir|o:s"=>\$outdir,
 	"help|h:s"=>\$help
 );
-$errNum ||= 2;
+$errNum ||= 2 if $read2;
+$errNum ||= 1 unless $read2;
 #my $os=$^O;
 #if ($os eq 'linux'){
 $outdir ||= `pwd`;
@@ -54,7 +56,7 @@ $outdir ||= `pwd`;
 $compress ||= 'Y';
 $rc ||= 'Y';
 
-if(!$read1 || !$read2 || !$fc || !$bl || $help ){
+if(!$read1 || !$fc || !$bl || $help ){
 	die "$usage";
 }
 
@@ -62,25 +64,35 @@ if(!$read1 || !$read2 || !$fc || !$bl || $help ){
 my (%barhash,%oh,%oribar,%correctBar,%correctedBar,%unknownBar,$totalReadsNum);
 my (%tagNum,$am1,$am2,@fq,$barcode_len);
 #=========================
-
-my $name=basename($read2);
-$prefix=$1 if $name=~/(.*)\_(\w+)_2\.fq(.gz)?/;
+if($read2){
+	my $name=basename($read2);
+	$prefix=$1 if $name=~/(.*)\_(\w+)_2\.fq(.gz)?/;	# V300009631_128A_L01_read_2.fq.gz
+}else{
+	my $name=basename($read1);
+	$prefix=$1 if $name=~/(.*)\_(\w+)\.fq(.gz)?/;	# S100004580_38_L01_read.fq.gz
+}
 unless(-d $outdir){
 	print STDERR "$outdir: No such directory, but we will creat it\n";
 	`mkdir -p $outdir`;
 }
 $outdir=abs_path($outdir);
+print STDERR "==================important information===============\n";
+print STDERR "read 1:\t$read1\nread 2:\t$read2\n" if $read2;
+print STDERR "read 1:\t$read1\n" unless $read2;
+print STDERR "output directory:\t$outdir\nmismatch number:\t$errNum\nfirst cycle number:\t$fc\n";
+print STDERR "======================================================\n";
 chomp($outdir);
 open my $fh,$bl or die "$bl No such file, check it !\n$!";
-#if(uc($compress) eq 'Y'){
-#	open $am1,"|gzip -9 >$outdir/$prefix\_ambiguous_1.fq.gz" or die $!;
-#	open $am2,"|gzip -9 >$outdir/$prefix\_ambiguous_2.fq.gz" or die $!;
-#}else{
-open $am1,">$outdir/$prefix\_unbarcoded_1.fq" or die $!;
-open $am2,">$outdir/$prefix\_unbarcoded_2.fq" or die $!;
-push @fq,"$outdir/$prefix\_unbarcoded_1.fq";
-push @fq,"$outdir/$prefix\_unbarcoded_2.fq";
-#}
+if($read2){
+	open $am1,">$outdir/$prefix\_unbarcoded_1.fq" or die $!;
+	open $am2,">$outdir/$prefix\_unbarcoded_2.fq" or die $!;
+	push @fq,"$outdir/$prefix\_unbarcoded_1.fq";
+	push @fq,"$outdir/$prefix\_unbarcoded_2.fq";
+}
+else{
+	open $am1,">$outdir/$prefix\_unbarcoded.fq" or die $!;
+	push @fq,"$outdir/$prefix\_unbarcoded.fq";
+}
 open my $BS,">$outdir/BarcodeStat.txt" or die $!;
 open my $SS,">$outdir/TagStat.txt" or die $!;
 
@@ -100,60 +112,102 @@ while(<$fh>){	#1	ATGCATCTAA
 	$oribar{$tmp[1]} =1;
 	$barcode_len=length($tmp[1]);
 	&bar_hash($tmp[1],$tmp[0],$errNum,\%barhash);
-	open $oh{$barhash{$tmp[1]}}[0],">$outdir/$prefix\_$tmp[0]\_1.fq" or die $!;
-	open $oh{$barhash{$tmp[1]}}[1],">$outdir/$prefix\_$tmp[0]\_2.fq" or die $!;
-	push @fq,"$outdir/$prefix\_$tmp[0]\_1.fq";
-	push @fq,"$outdir/$prefix\_$tmp[0]\_2.fq";
+	if($read2){
+		open $oh{$barhash{$tmp[1]}}[0],">$outdir/$prefix\_$tmp[0]\_1.fq" or die $!;
+		open $oh{$barhash{$tmp[1]}}[1],">$outdir/$prefix\_$tmp[0]\_2.fq" or die $!;
+		push @fq,"$outdir/$prefix\_$tmp[0]\_1.fq";
+		push @fq,"$outdir/$prefix\_$tmp[0]\_2.fq";
+	}else{
+		open $oh{$barhash{$tmp[1]}}[0],">$outdir/$prefix\_$tmp[0].fq" or die $!;
+		push @fq,"$outdir/$prefix\_$tmp[0].fq";
+	}
 }
 close $fh;
 my($rd1,$rd2);
-if($read2=~/fq$/){
-	open $rd1,$read1 or die $!;
-	open $rd2,$read2 or die $!;
+if($read2){
+	if($read2=~/fq$/){
+		open $rd1,$read1 or die $!;
+		open $rd2,$read2 or die $!;
+	}
+	elsif($read2=~/fq.gz$/){
+		open $rd1,"gzip -dc $read1|" or die $!;
+		open $rd2,"gzip -dc $read2|" or die $!;
+	}
 }
-elsif($read2=~/fq.gz$/){
-	open $rd1,"gzip -dc $read1|" or die $!;
-	open $rd2,"gzip -dc $read2|" or die $!;
+else{
+	if($read1 =~/fq$/){
+		open $rd1,$read1 or die $!;
+	}
+	elsif($read1 =~/fq.gz$/){
+		open $rd1,"gzip -dc $read1|" or die $!;
+	}
 }
-
-while(<$rd1>){
-	my $head1= $_;
-	my $seq1 = <$rd1>;
-	my $plus1= <$rd1>;
-	my $qual1= <$rd1>;
-	my $head2= <$rd2>;
-	my $seq2 = <$rd2>;
-	my $plus2= <$rd2>;
-	my $qual2= <$rd2>;
-	$totalReadsNum ++;
-	chomp($head1,$seq1,$plus1,$qual1,$head2,$seq2,$plus2,$qual2);
-	my $barseq=substr($seq2,$fc-1,$barcode_len+1);
-	$tagNum{$barseq} ++;
-	if(exists $barhash{$barseq}){
-		my $spitseq2=substr($seq2,0,$fc-1).substr($seq2,$fc+$barcode_len-1,);
-		my $spitqual2=substr($qual2,0,$fc-1).substr($qual2,$fc+$barcode_len-1,);
-		#my $fh1=$oh{$barhash{$barseq}}[0];my$fh2=$oh{$barhash{$barseq}}[1];
-		$oh{$barhash{$barseq}}[0]->print("$head1\n$seq1\n$plus1\n$qual1\n");
-		$oh{$barhash{$barseq}}[1]->print("$head2\n$spitseq2\n$plus2\n$spitqual2\n");
-		#print $fh1 "$head1\n$seq1\n$plus1\n$qual1\n";
-		#print $fh2 "$head2\n$spitseq2\n$plus2\n$spitqual2\n";
-		if(exists $oribar{$barseq}){
-			$correctBar{$barhash{$barseq}} +=1;
+if($read2){
+	while(<$rd1>){
+		my $head1= $_;
+		my $seq1 = <$rd1>;
+		my $plus1= <$rd1>;
+		my $qual1= <$rd1>;
+		my $head2= <$rd2>;
+		my $seq2 = <$rd2>;
+		my $plus2= <$rd2>;
+		my $qual2= <$rd2>;
+		$totalReadsNum ++;
+		chomp($head1,$seq1,$plus1,$qual1,$head2,$seq2,$plus2,$qual2);
+		my $barseq=substr($seq2,$fc-1,$barcode_len+1);
+		$tagNum{$barseq} ++;
+		if(exists $barhash{$barseq}){
+			my $spitseq2=substr($seq2,0,$fc-1).substr($seq2,$fc+$barcode_len-1,);
+			my $spitqual2=substr($qual2,0,$fc-1).substr($qual2,$fc+$barcode_len-1,);
+			#my $fh1=$oh{$barhash{$barseq}}[0];my$fh2=$oh{$barhash{$barseq}}[1];
+			$oh{$barhash{$barseq}}[0]->print("$head1\n$seq1\n$plus1\n$qual1\n");
+			$oh{$barhash{$barseq}}[1]->print("$head2\n$spitseq2\n$plus2\n$spitqual2\n");
+			#print $fh1 "$head1\n$seq1\n$plus1\n$qual1\n";
+			#print $fh2 "$head2\n$spitseq2\n$plus2\n$spitqual2\n";
+			if(exists $oribar{$barseq}){
+				$correctBar{$barhash{$barseq}} +=1;
+			}
+			else{
+				$correctedBar{$barhash{$barseq}} +=1;
+			}
+		}
+		else{	#unbarcoded
+			#my $spitseq2=substr($seq2,0,$fc-1).substr($seq2,$fc+$barcode_len-1,);
+			#my $spitqual2=substr($qual2,0,$fc-1).substr($qual2,$fc+$barcode_len-1,);
+			print $am1 "$head1\n$seq1\n$plus1\n$qual1\n";
+			#print $am2 "$head2\n$spitseq2\n$plus2\n$spitqual2\n";
+			print $am2 "$head2\n$seq2\n$plus2\n$qual2\n";	
+			$unknownBar{$barseq} +=1;
+		}
+	}
+	close $rd1;close $rd2;
+	close $am1;close $am2;
+}else{
+	while(<$rd1>){
+		my $head1= $_;
+		my $seq1 = <$rd1>;
+		my $plus1= <$rd1>;
+		my $qual1= <$rd1>;
+		$totalReadsNum ++;
+		chomp($head1,$seq1,$plus1,$qual1);
+		my $barseq=substr($seq1,$fc-1,$barcode_len+1);
+		$tagNum{$barseq} ++;
+		if(exists $barhash{$barseq}){
+			my $spitseq1=substr($seq1,0,$fc-1).substr($seq1,$fc+$barcode_len-1,);
+			my $spitqual1=substr($qual1,0,$fc-1).substr($qual1,$fc+$barcode_len-1,);
+			$oh{$barhash{$barseq}}[0]->print("$head1\n$spitseq1\n$plus1\n$spitqual1\n");
+			if(exists $oribar{$barseq}){
+				$correctBar{$barhash{$barseq}} +=1;
+			}else{
+				$correctedBar{$barhash{$barseq}} +=1;
+			}
 		}
 		else{
-			$correctedBar{$barhash{$barseq}} +=1;
+			print $am1 "$head1\n$seq1\n$plus1\n$qual1\n";
 		}
 	}
-	else{
-		my $spitseq2=substr($seq2,0,$fc-1).substr($seq2,$fc+$barcode_len-1,);
-		my $spitqual2=substr($qual2,0,$fc-1).substr($qual2,$fc+$barcode_len-1,);
-		print $am1 "$head1\n$seq1\n$plus1\n$qual1\n";
-		print $am2 "$head2\n$spitseq2\n$plus2\n$spitqual2\n";
-		$unknownBar{$barseq} +=1;
-	}
+	close $rd1;close $am1;
 }
-close $rd1;close $rd2;
-close $am1;close $am2;
 
 my($totalcorrect,$totalcorrected,$totalbarreads,$totalpct);
 for my $seq(sort {$barhash{$a} cmp $barhash{$b}} keys %oribar){
@@ -196,14 +250,10 @@ if(uc($compress) eq 'Y'){
 		else{
 			print $gzip "gzip -9 $fastq\n";
 		}
-		#system("gzip -9 $fastq");
-		#system("echo -e 'if \[ -e \"$gz\" \]; then \n\trm -rf $gz \nfi\ngzip -9 $fastq ' > $fastq.sh ");
 		print $main "sh $fastq\_gzip.sh &\n";
 		close $gzip;
 	}
 	close $main;
-	#system("sh $outdir/$prefix\_gzip.sh");
-	#system("rm $outdir/*fq.sh $outdir/$prefix\_gzip.sh ");
 }
 
 
