@@ -44,9 +44,10 @@ GetOptions(
 	"outdir|o:s"=>\$outdir,
 	"help|h:s"=>\$help
 );
-$errNum ||= 2 if $read2;
-$errNum ||= 1 unless $read2;
-#my $os=$^O;
+if($errNum != 0){
+	$errNum ||= 2 if $read2;
+	$errNum ||= 1 unless $read2;
+}
 #if ($os eq 'linux'){
 $outdir ||= `pwd`;
 #}
