@@ -44,7 +44,12 @@ GetOptions(
 	"outdir|o:s"=>\$outdir,
 	"help|h:s"=>\$help
 );
-if($errNum != 0){
+#$errNum ||= 2 if $read2;
+#$errNum ||= 1 unless $read2;
+if(defined $errNum && $errNum == 0){
+	$errNum=0;
+}
+elsif(!defined $errNum ){
 	$errNum ||= 2 if $read2;
 	$errNum ||= 1 unless $read2;
 }
