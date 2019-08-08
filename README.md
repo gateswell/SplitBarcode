@@ -5,7 +5,7 @@ The repository provides scripts for spliting PE fastq from MGI sequencer platfor
 The current implementation was written by caoshuhuan (caoshuhuan@yeah.net). 
 I would appeciate if you send email to me when you have any question about this script or report bug ! 
 ## Version history
-The current code version is v1.0.1  
+The current code version is v1.0.2  
 
 v1.0  
  - split PE fastq with single barcode 
@@ -17,6 +17,9 @@ v1.0.1
  - modified compress method to reduce process time  
  - submit `SplitDualBarcodes.pl` for MGI dual barcodes multiplexing, type in `perl SplitDualBarcodes.pl -h` to get the tutorial of this script  
 
+v1.0.2 
+ - support SE data  
+ 
 v1.1 *(under deverlopment)* :
  - intergrate single and dual barcodes multiplexing module 
  - support windows system 
@@ -33,8 +36,8 @@ The script runs on `CentOS 7` or other linux systems on a **64Bit** machine with
 Usage:
 	perl splitBarcode_PE.pl [options]
 		*-r1 --read1 <string>		read1.fq.gz
-		*-r2 --read2 <string>		read2.fq.gz
-		 -e  --errNum <int>		mismatch number [default: 2]
+		 -r2 --read2 <string>		read2.fq.gz if not provided, it will be SE
+		 -e  --errNum <int>		mismatch number [default: 2 for PE, 1 for SE]
 		*-f  --firstCycle <int>		First cylce of barcode
 		*-b  --barcodeList <string>	barcodes list
 		 -rc --revcom	<Y|N>		generate reverse complement of barcode.list or not [default: Y]
