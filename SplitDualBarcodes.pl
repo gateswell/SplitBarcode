@@ -122,9 +122,10 @@ if($read2=~/fq$/){
 	open $rd2,$read2 or die $!;
 }
 elsif($read2=~/fq.gz$/){
-	open $rd1,"gzip -dc $read1|" or die $!;
-	open $rd2,"gzip -dc $read2|" or die $!;
-}
+	#open $rd1,"gzip -dc $read1|" or die $!;
+	#open $rd2,"gzip -dc $read2|" or die $!;
+	open $rd1,"zcat $read1|" or die $!;	#suggested by shengqin
+}   open $rd2,"zcat $read2|" or die $!;	#suggested by shengqin
 
 while(<$rd1>){
 	my $head1= $_;
